@@ -5,14 +5,20 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Map;
 
 public class GUI {
-    private static final int WIDTH = 750;
-    private static final int HEIGHT = 250;
+    private static final int WIDTH = 720;
+    private static final int HEIGHT = 260;
     private static final int SYMBOLS_IN_ROW = 50;
-    private static final String[] SUPPORTED_ALPHABETS = {"UA", "RU", "EN"};
-    private static ArrayList<String> fileByRows;
+    private static String fileContent;
+    private static String codeContent;
+    private static String codeFileName = "code.txt";
+    private static String decodeContent;
+    private static String decodeFileName = "decode.txt";
+    private static String statisticFileContent;
     private static Alphabet alphabet;
+    private static String languageValue;
 
     public static void main(String[] args) {
         JFrame jFrame = new JFrame();
@@ -39,15 +45,14 @@ public class GUI {
                 int option = fileChooser.showOpenDialog(jFrame);
                 if (option == JFileChooser.APPROVE_OPTION) {
                     File file = fileChooser.getSelectedFile();
-                    fileByRows = FileActions.readFromFileByRows(file.toString());
-                    String fileContent = "";
-                    for (String fileRow : fileByRows) {
-                        fileContent = fileContent + fileRow;
-                    }
+                    fileContent = FileActions.readFromFile(file.toString());
                     JTextArea textArea = new JTextArea(fileContent);
                     textArea.setColumns(SYMBOLS_IN_ROW);
                     JScrollPane scrollPane = new JScrollPane(textArea);
                     JOptionPane.showMessageDialog(null, scrollPane);
+                    languageValue = Utils.getLanguage(fileContent);
+                    alphabet = new Alphabet(languageValue);
+                    JOptionPane.showMessageDialog(null, "Possible text language: " + languageValue);
                 } else {
                     JOptionPane.showMessageDialog(null, "Open command canceled");
                 }
@@ -65,40 +70,27 @@ public class GUI {
         spinner.setBounds(150, 90, 260, 25);
         jPanel.add(spinner);
 
-        // Language label
-        JLabel languageLabel = new JLabel("Select language:");
-        languageLabel.setBounds(10, 155, 130, 25);
-        jPanel.add(languageLabel);
-
-        // Language comboBox
-        JComboBox<String> comboBox = new JComboBox<>(SUPPORTED_ALPHABETS);
-        comboBox.setBounds(150, 155, 260, 25);
-        jPanel.add(comboBox);
 
         // ADD code btn
         JButton codeButton = new JButton("CODE");
-        codeButton.setBounds(420, 15, 100, 165);
+        codeButton.setBounds(5, 130, 200, 90);
         codeButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String languageValue = (String) comboBox.getSelectedItem();
                 int cryptoKey = (int) spinner.getValue();
-                alphabet = new Alphabet(languageValue);
-                ArrayList<String> codeFileByRows = new ArrayList<>();
-                String codeContent = "";
                 try {
-                    for (String row : fileByRows) {
-                        String codeRow = Caesar.code(row, cryptoKey, alphabet.getAlphabetMap());
-                        codeFileByRows.add(codeRow);
-                        codeContent = codeContent + codeRow;
-                    }
+                    codeContent = Caesar.code(fileContent, cryptoKey, alphabet.getAlphabetMap());
                     JTextArea textArea = new JTextArea(codeContent);
                     textArea.setColumns(SYMBOLS_IN_ROW);
                     JScrollPane scrollPane = new JScrollPane(textArea);
                     JOptionPane.showMessageDialog(null, scrollPane);
-                    FileActions.writeToFileByRows("code.txt", codeFileByRows);
+                    FileActions.writeToFile(codeFileName, codeContent);
                 } catch (NullPointerException exception) {
-                    JOptionPane.showMessageDialog(null, "Text contains not supported characters");
+                    if (fileContent == null) {
+                        JOptionPane.showMessageDialog(null, "Source file was not chosen");
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Text contains not supported characters");
+                    }
                 }
             }
         });
@@ -106,28 +98,24 @@ public class GUI {
 
         // ADD decode btn
         JButton deCodeButton = new JButton("DECODE");
-        deCodeButton.setBounds(530, 15, 100, 165);
+        deCodeButton.setBounds(210, 130, 200, 90);
         deCodeButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String languageValue = (String) comboBox.getSelectedItem();
                 int cryptoKey = (int) spinner.getValue();
-                alphabet = new Alphabet(languageValue);
-                ArrayList<String> decodeFileByRows = new ArrayList<>();
-                String decodeContent = "";
                 try {
-                    for (String row : fileByRows) {
-                        String decodeRow = Caesar.deCode(row, cryptoKey, alphabet.getAlphabetMap());
-                        decodeFileByRows.add(decodeRow);
-                        decodeContent = decodeContent + decodeRow;
-                    }
+                    decodeContent = Caesar.deCode(fileContent, cryptoKey, alphabet.getAlphabetMap());
                     JTextArea textArea = new JTextArea(decodeContent);
                     textArea.setColumns(SYMBOLS_IN_ROW);
                     JScrollPane scrollPane = new JScrollPane(textArea);
                     JOptionPane.showMessageDialog(null, scrollPane);
-                    FileActions.writeToFileByRows("decode.txt", decodeFileByRows);
+                    FileActions.writeToFile(decodeFileName, decodeContent);
                 } catch (NullPointerException exception) {
-                    JOptionPane.showMessageDialog(null, "Text contains not supported characters");
+                    if (fileContent == null) {
+                        JOptionPane.showMessageDialog(null, "Source file was not chosen");
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Text contains not supported characters");
+                    }
                 }
             }
         });
@@ -135,39 +123,71 @@ public class GUI {
 
         // ADD bruteforce btn
         JButton bruteForceButton = new JButton("BRUTE FORCE");
-        bruteForceButton.setBounds(640, 15, 100, 165);
+        bruteForceButton.setBounds(420, 15, 120, 205);
         bruteForceButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String languageValue = "UA";
                 try {
-                    languageValue = Utils.getLanguage(fileByRows);
-                    JOptionPane.showMessageDialog(null, "Possible text language: " + languageValue);
-                } catch (NullPointerException exc) {
-                    JOptionPane.showMessageDialog(null, "File was not selected");
-                }
-                alphabet = new Alphabet(languageValue);
-                ArrayList<String> decodeFileByRows = new ArrayList<>();
-                String decodeContent = "";
-                try {
-                    int cryptoKey = Caesar.getCryptoKeyByBruteForce(fileByRows, alphabet.getAlphabetMap());
+                    int cryptoKey = Caesar.getCryptoKeyByBruteForce(fileContent, alphabet.getAlphabetMap());
                     JOptionPane.showMessageDialog(null, "Possible crypto key: " + cryptoKey);
-                    for (String row : fileByRows) {
-                        String decodeRow = Caesar.deCode(row, cryptoKey, alphabet.getAlphabetMap());
-                        decodeFileByRows.add(decodeRow);
-                        decodeContent = decodeContent + decodeRow;
-                    }
+                    decodeContent = Caesar.deCode(fileContent, cryptoKey, alphabet.getAlphabetMap());
                     JTextArea textArea = new JTextArea(decodeContent);
                     textArea.setColumns(SYMBOLS_IN_ROW);
                     JScrollPane scrollPane = new JScrollPane(textArea);
                     JOptionPane.showMessageDialog(null, scrollPane);
-                    FileActions.writeToFileByRows("decode.txt", decodeFileByRows);
+                    FileActions.writeToFile(decodeFileName, decodeContent);
                 } catch (NullPointerException exception) {
-                    JOptionPane.showMessageDialog(null, "Text contains not supported characters");
+                    if (fileContent == null) {
+                        JOptionPane.showMessageDialog(null, "Source file was not chosen");
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Text contains not supported characters");
+                    }
                 }
             }
         });
         jPanel.add(bruteForceButton);
+
+        // Button for add second file for statistic analyze
+        JButton secondFileButton = new JButton("Select second file");
+        secondFileButton.setBounds(560, 15, 150, 100);
+        secondFileButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JFileChooser fileChooser = new JFileChooser();
+                fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+                int option = fileChooser.showOpenDialog(jFrame);
+                if (option == JFileChooser.APPROVE_OPTION) {
+                    File file = fileChooser.getSelectedFile();
+                    statisticFileContent = FileActions.readFromFile(file.toString());
+                    JTextArea textArea = new JTextArea(statisticFileContent);
+                    textArea.setColumns(SYMBOLS_IN_ROW);
+                    JScrollPane scrollPane = new JScrollPane(textArea);
+                    JOptionPane.showMessageDialog(null, scrollPane);
+                } else {
+                    JOptionPane.showMessageDialog(null, "Open command canceled");
+                }
+            }
+        });
+        jPanel.add(secondFileButton);
+
+        // Button for statistic analyze
+        JButton statisticAnalyzeButton = new JButton("STATISTIC ANALYZER");
+        statisticAnalyzeButton.setBounds(560, 120, 150, 100);
+        statisticAnalyzeButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    decodeContent = Caesar.decodeByStatisticMap(fileContent, statisticFileContent, alphabet);
+                } catch (NullPointerException exception) {
+                    JOptionPane.showMessageDialog(null, "Not both files opened");
+                }
+                JTextArea textArea = new JTextArea(decodeContent);
+                textArea.setColumns(SYMBOLS_IN_ROW);
+                JScrollPane scrollPane = new JScrollPane(textArea);
+                JOptionPane.showMessageDialog(null, scrollPane);
+            }
+        });
+        jPanel.add(statisticAnalyzeButton);
 
         jFrame.setVisible(true);
     }

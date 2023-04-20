@@ -1,15 +1,14 @@
 package javaProjects.caesarCrypto;
 
-import java.util.ArrayList;
-import java.util.Map;
+import java.util.*;
 
 public class Utils {
     public static String charListToString(ArrayList<Character> charList) {
-        String text = "";
+        StringBuilder sb = new StringBuilder(charList.size());
         for (Character symbol : charList) {
-            text += symbol.toString();
+            sb.append(symbol);
         }
-        return text;
+        return sb.toString();
     }
 
     public static ArrayList<Character> getArrayListFromArray(char[] array) {
@@ -27,19 +26,17 @@ public class Utils {
                 .orElse(null);
     }
 
-    public static boolean isTextSupportLanguage(ArrayList<String> fileByRows, String languageMarker) {
-        for (String row : fileByRows) {
-            ArrayList<Character> languageMarkers = Utils.getArrayListFromArray(languageMarker.toCharArray());
-            for (Character symbol : languageMarkers) {
-                if (row.contains(symbol.toString())) {
-                    return true;
-                }
+    public static boolean isTextSupportLanguage(String fileContent, String languageMarker) {
+        ArrayList<Character> languageMarkers = Utils.getArrayListFromArray(languageMarker.toCharArray());
+        for (Character symbol : languageMarkers) {
+            if (fileContent.contains(symbol.toString())) {
+                return true;
             }
         }
         return false;
     }
 
-    public static String getLanguage(ArrayList<String> fileByRows) {
+    public static String getLanguage(String fileByRows) {
         final String UA_ALPHABET_MARKER = "іґІґ";
         final String RU_ALPHABET_MARKER = "ыЁёъ";
         final String EN_ALPHABET_MARKER = "fFhJjkKgqQr";
@@ -50,6 +47,23 @@ public class Utils {
         } else if (isTextSupportLanguage(fileByRows, EN_ALPHABET_MARKER)) {
             return "EN";
         }
-        return "UA";
+        return "unsupported language";
+    }
+
+    public static <K, V extends Comparable<? super V>> Map<K, V> sortMapByValue(Map<K, V> map) {
+        List<Map.Entry<K, V>> list = new ArrayList<>(map.entrySet());
+        list.sort(Collections.reverseOrder(Map.Entry.comparingByValue()));
+
+        Map<K, V> result = new LinkedHashMap<>();
+        for (Map.Entry<K, V> entry : list) {
+            result.put(entry.getKey(), entry.getValue());
+        }
+        return result;
+    }
+
+    public static String[] sortedArrayByValue(Map<String, Integer> map) {
+        Map<String, Integer> sortedMap = Utils.sortMapByValue(map);
+        String[] sortedKeys = sortedMap.keySet().toArray(new String[0]);
+        return sortedKeys;
     }
 }
