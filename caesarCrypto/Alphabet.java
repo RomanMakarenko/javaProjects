@@ -21,10 +21,6 @@ public class Alphabet {
         };
     }
 
-    public String getAlphabet() {
-        return this.alphabet;
-    }
-
     public String getAlphabetWithSpecialSymbols() {
         return this.alphabet + this.SPECIAL_SYMBOLS + this.NUMBERS;
     }

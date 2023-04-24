@@ -1,1 +1,0 @@
-This example uses the Language Detection API to detect the language of the text "This is some example text." The detect() method returns a two-letter language code, such as "en" for English or "fr" for French.

@@ -6,22 +6,29 @@ import java.util.HashSet;
 import java.util.Map;
 
 public class Caesar {
-    public static final String PUNCTUATION_RULE_1 = ", ";
-    public static final String PUNCTUATION_RULE_2 = ". ";
+    private final Alphabet alphabet;
+    private final Map<Integer, Character> alphabetMap;
+    private final String PUNCTUATION_RULE_1 = ", ";
+    private final String PUNCTUATION_RULE_2 = ". ";
 
-    public static String code(String text, int shiftValue, Map<Integer, Character> alphabetMap) {
-        ArrayList<Character> charList = Caesar.getCodeCharList(text, shiftValue, alphabetMap);
+    public Caesar(Alphabet alphabet) {
+        this.alphabet = alphabet;
+        alphabetMap = alphabet.getAlphabetMap();
+    }
+
+    public String code(String text, int shiftValue) {
+        ArrayList<Character> charList = this.getCodeCharList(text, shiftValue);
         String codedString = Utils.charListToString(charList);
         return codedString;
     }
 
-    public static String deCode(String text, int shiftValue, Map<Integer, Character> alphabetMap) {
-        ArrayList<Character> charList = Caesar.getDecodeCharList(text, shiftValue, alphabetMap);
+    public String deCode(String text, int shiftValue) {
+        ArrayList<Character> charList = this.getDecodeCharList(text, shiftValue);
         String decodedString = Utils.charListToString(charList);
         return decodedString;
     }
 
-    private static ArrayList<Character> getCodeCharList(String text, int shiftValue, Map<Integer, Character> alphabetMap) {
+    private ArrayList<Character> getCodeCharList(String text, int shiftValue) {
         ArrayList<Character> textSymbols = Utils.getArrayListFromArray(text.toCharArray());
         ArrayList<Character> shiftedTextSymbols = new ArrayList<>();
         for (int i = 0; i < textSymbols.size(); i++) {
@@ -39,7 +46,7 @@ public class Caesar {
         return shiftedTextSymbols;
     }
 
-    private static ArrayList<Character> getDecodeCharList(String text, int shiftValue, Map<Integer, Character> alphabetMap) {
+    private ArrayList<Character> getDecodeCharList(String text, int shiftValue) {
         ArrayList<Character> textSymbols = Utils.getArrayListFromArray(text.toCharArray());
         ArrayList<Character> shiftedTextSymbols = new ArrayList<>();
         for (int i = 0; i < textSymbols.size(); i++) {
@@ -52,26 +59,13 @@ public class Caesar {
         return shiftedTextSymbols;
     }
 
-    public static HashSet<Integer> getListOfPossibleByRulesKeys(ArrayList<String> fileByRows, Map<Integer, Character> alphabetMap, String rule) {
-        HashSet<Integer> listOfPossibleKeys = new HashSet<>();
-        for (String row : fileByRows) {
-            for (int i = 0; i < alphabetMap.size(); i++) {
-                String decodeRow = deCode(row, i, alphabetMap);
-                if (decodeRow.contains(rule)) {
-                    listOfPossibleKeys.add(i);
-                }
-            }
-        }
-        return listOfPossibleKeys;
-    }
-
-    public static int getCryptoKeyByBruteForce(String fileByRows, Map<Integer, Character> alphabetMap) {
+    public int getCryptoKeyByBruteForce(String fileContent) {
         HashSet<Integer> possibleKeysByPunctuationRule1 = new HashSet<>();
         HashSet<Integer> possibleKeysByPunctuationRule2 = new HashSet<>();
         HashSet<Integer> possibleKeysByPunctuationRule3 = new HashSet<>();
         HashSet<Integer> possibleKeysByGrammarRule1 = new HashSet<>();
         for (int i = 0; i < alphabetMap.size(); i++) {
-            String decodeRow = deCode(fileByRows, i, alphabetMap);
+            String decodeRow = this.deCode(fileContent, i);
             if (decodeRow.contains(PUNCTUATION_RULE_1)) {
                 possibleKeysByPunctuationRule1.add(i);
             }
@@ -104,9 +98,7 @@ public class Caesar {
         return possibleKey;
     }
 
-
-
-    private static Map<String, String> getStatisticMap(String codeText, String exampleText, Alphabet alphabet) {
+    private Map<String, String> getStatisticMap(String codeText, String exampleText) {
         String[] sortedCodeSymbols = Utils.sortedArrayByValue(alphabet.getSymbolsFrequencyMap(codeText));
         String[] sortedExampleSymbols = Utils.sortedArrayByValue(alphabet.getSymbolsFrequencyMap(exampleText));
         Map<String, String> statisticMap = new HashMap<>();
@@ -120,8 +112,8 @@ public class Caesar {
         return statisticMap;
     }
 
-    public static String decodeByStatisticMap(String codeText, String exampleText, Alphabet alphabet) {
-        Map<String, String> statisticMap = getStatisticMap(codeText, exampleText, alphabet);
+    public String decodeByStatisticMap(String codeText, String exampleText) {
+        Map<String, String> statisticMap = this.getStatisticMap(codeText, exampleText);
         char[] codeSymbols = codeText.toCharArray();
         String decodeText = "";
         for (Character codeSymbol : codeSymbols) {
