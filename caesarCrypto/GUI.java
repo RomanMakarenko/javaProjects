@@ -19,6 +19,7 @@ public class GUI {
     private static String statisticFileContent;
     private static Alphabet alphabet;
     private static String languageValue;
+    private static Caesar caesar;
 
     public static void main(String[] args) {
         JFrame jFrame = new JFrame();
@@ -52,6 +53,7 @@ public class GUI {
                     JOptionPane.showMessageDialog(null, scrollPane);
                     languageValue = Utils.getLanguage(fileContent);
                     alphabet = new Alphabet(languageValue);
+                    caesar = new Caesar(alphabet);
                     JOptionPane.showMessageDialog(null, "Possible text language: " + languageValue);
                 } else {
                     JOptionPane.showMessageDialog(null, "Open command canceled");
@@ -79,7 +81,7 @@ public class GUI {
             public void actionPerformed(ActionEvent e) {
                 int cryptoKey = (int) spinner.getValue();
                 try {
-                    codeContent = Caesar.code(fileContent, cryptoKey, alphabet.getAlphabetMap());
+                    codeContent = caesar.code(fileContent, cryptoKey);
                     JTextArea textArea = new JTextArea(codeContent);
                     textArea.setColumns(SYMBOLS_IN_ROW);
                     JScrollPane scrollPane = new JScrollPane(textArea);
@@ -104,7 +106,7 @@ public class GUI {
             public void actionPerformed(ActionEvent e) {
                 int cryptoKey = (int) spinner.getValue();
                 try {
-                    decodeContent = Caesar.deCode(fileContent, cryptoKey, alphabet.getAlphabetMap());
+                    decodeContent = caesar.deCode(fileContent, cryptoKey);
                     JTextArea textArea = new JTextArea(decodeContent);
                     textArea.setColumns(SYMBOLS_IN_ROW);
                     JScrollPane scrollPane = new JScrollPane(textArea);
@@ -128,9 +130,9 @@ public class GUI {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    int cryptoKey = Caesar.getCryptoKeyByBruteForce(fileContent, alphabet.getAlphabetMap());
+                    int cryptoKey = caesar.getCryptoKeyByBruteForce(fileContent);
                     JOptionPane.showMessageDialog(null, "Possible crypto key: " + cryptoKey);
-                    decodeContent = Caesar.deCode(fileContent, cryptoKey, alphabet.getAlphabetMap());
+                    decodeContent = caesar.deCode(fileContent, cryptoKey);
                     JTextArea textArea = new JTextArea(decodeContent);
                     textArea.setColumns(SYMBOLS_IN_ROW);
                     JScrollPane scrollPane = new JScrollPane(textArea);
@@ -177,7 +179,7 @@ public class GUI {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    decodeContent = Caesar.decodeByStatisticMap(fileContent, statisticFileContent, alphabet);
+                    decodeContent = caesar.decodeByStatisticMap(fileContent, statisticFileContent);
                 } catch (NullPointerException exception) {
                     JOptionPane.showMessageDialog(null, "Not both files opened");
                 }
