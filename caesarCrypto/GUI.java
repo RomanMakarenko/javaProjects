@@ -4,6 +4,7 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -11,11 +12,14 @@ public class GUI {
     private static final int WIDTH = 720;
     private static final int HEIGHT = 260;
     private static final int SYMBOLS_IN_ROW = 50;
+    private static final String CODE_PREFIX = "[ENCRYPT]";
+    private static final String DECODE_PREFIX = "[DECRYPT]";
+    private static final String BRUTE_FORCE_PREFIX = "[BRUTE_FORCE]";
+    private static final String FREQUENCY_PREFIX = "[FREQUENCY]";
     private static String fileContent;
     private static String codeContent;
-    private static String codeFileName = "code.txt";
+    private static String fileName;
     private static String decodeContent;
-    private static String decodeFileName = "decode.txt";
     private static String statisticFileContent;
     private static Alphabet alphabet;
     private static String languageValue;
@@ -46,6 +50,7 @@ public class GUI {
                 int option = fileChooser.showOpenDialog(jFrame);
                 if (option == JFileChooser.APPROVE_OPTION) {
                     File file = fileChooser.getSelectedFile();
+                    fileName = Utils.removePrefix(Path.of(file.toString()).getFileName().toString());
                     fileContent = FileActions.readFromFile(file.toString());
                     JTextArea textArea = new JTextArea(fileContent);
                     textArea.setColumns(SYMBOLS_IN_ROW);
@@ -72,7 +77,6 @@ public class GUI {
         spinner.setBounds(150, 90, 260, 25);
         jPanel.add(spinner);
 
-
         // ADD code btn
         JButton codeButton = new JButton("CODE");
         codeButton.setBounds(5, 130, 200, 90);
@@ -86,7 +90,7 @@ public class GUI {
                     textArea.setColumns(SYMBOLS_IN_ROW);
                     JScrollPane scrollPane = new JScrollPane(textArea);
                     JOptionPane.showMessageDialog(null, scrollPane);
-                    FileActions.writeToFile(codeFileName, codeContent);
+                    FileActions.writeToFile(CODE_PREFIX + fileName, codeContent);
                 } catch (NullPointerException exception) {
                     if (fileContent == null) {
                         JOptionPane.showMessageDialog(null, "Source file was not chosen");
@@ -111,7 +115,7 @@ public class GUI {
                     textArea.setColumns(SYMBOLS_IN_ROW);
                     JScrollPane scrollPane = new JScrollPane(textArea);
                     JOptionPane.showMessageDialog(null, scrollPane);
-                    FileActions.writeToFile(decodeFileName, decodeContent);
+                    FileActions.writeToFile(DECODE_PREFIX + fileName, decodeContent);
                 } catch (NullPointerException exception) {
                     if (fileContent == null) {
                         JOptionPane.showMessageDialog(null, "Source file was not chosen");
@@ -137,7 +141,7 @@ public class GUI {
                     textArea.setColumns(SYMBOLS_IN_ROW);
                     JScrollPane scrollPane = new JScrollPane(textArea);
                     JOptionPane.showMessageDialog(null, scrollPane);
-                    FileActions.writeToFile(decodeFileName, decodeContent);
+                    FileActions.writeToFile(BRUTE_FORCE_PREFIX + fileName, decodeContent);
                 } catch (NullPointerException exception) {
                     if (fileContent == null) {
                         JOptionPane.showMessageDialog(null, "Source file was not chosen");
@@ -180,6 +184,7 @@ public class GUI {
             public void actionPerformed(ActionEvent e) {
                 try {
                     decodeContent = caesar.decodeByStatisticMap(fileContent, statisticFileContent);
+                    FileActions.writeToFile(FREQUENCY_PREFIX + fileName, decodeContent);
                 } catch (NullPointerException exception) {
                     JOptionPane.showMessageDialog(null, "Not both files opened");
                 }

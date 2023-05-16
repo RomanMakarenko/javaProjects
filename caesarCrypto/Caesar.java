@@ -32,11 +32,11 @@ public class Caesar {
         ArrayList<Character> textSymbols = Utils.getArrayListFromArray(text.toCharArray());
         ArrayList<Character> shiftedTextSymbols = new ArrayList<>();
         for (int i = 0; i < textSymbols.size(); i++) {
-            int charNumberBeforeShift = Utils.getKey(alphabetMap, ' ');
+            int charNumberBeforeShift = Utils.getKey(alphabetMap, '*');
             try {
                 charNumberBeforeShift = Utils.getKey(alphabetMap, textSymbols.get(i));
             } catch (NullPointerException e) {
-                System.out.println("Replace unsupported char: " + textSymbols.get(i) + " to space symbol");
+                System.out.println("Replace unsupported char: " + textSymbols.get(i) + " to * symbol");
             }
             int charNumberAfterShift = charNumberBeforeShift + shiftValue <= alphabetMap.size()
                     ? charNumberBeforeShift + shiftValue
