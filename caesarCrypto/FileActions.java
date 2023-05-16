@@ -9,7 +9,7 @@ public class FileActions {
         try (FileReader fileReader = new FileReader(fileName)) {
             BufferedReader bufferedReader = new BufferedReader(fileReader);
             while (bufferedReader.ready()) {
-                fileContent += bufferedReader.readLine();
+                fileContent += bufferedReader.readLine() + "\n";
             }
         } catch (IOException e) {
             System.out.println(e);

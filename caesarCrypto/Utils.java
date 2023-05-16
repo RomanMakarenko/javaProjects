@@ -37,7 +37,7 @@ public class Utils {
     }
 
     public static String getLanguage(String fileByRows) {
-        final String UA_ALPHABET_MARKER = "іґІґ";
+        final String UA_ALPHABET_MARKER = "іґІґЇї";
         final String RU_ALPHABET_MARKER = "ыЁёъ";
         final String EN_ALPHABET_MARKER = "fFhJjkKgqQr";
         if (isTextSupportLanguage(fileByRows, UA_ALPHABET_MARKER)) {
@@ -65,5 +65,9 @@ public class Utils {
         Map<String, Integer> sortedMap = Utils.sortMapByValue(map);
         String[] sortedKeys = sortedMap.keySet().toArray(new String[0]);
         return sortedKeys;
+    }
+
+    public static String removePrefix(String fileName) {
+        return fileName.replaceAll("\\[[^\\]]*\\]", "");
     }
 }
