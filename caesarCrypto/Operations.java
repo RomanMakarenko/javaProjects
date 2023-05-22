@@ -6,13 +6,17 @@ public enum Operations {
     BRUTE_FORCE("BRUTE_FORCE"),
     FREQUENCY("FREQUENCY");
 
-    private final String prefix;
+    private final String operation;
 
-    Operations(String prefix) {
-        this.prefix = prefix;
+    Operations(String operation) {
+        this.operation = operation;
     }
 
     public String getOperation() {
-        return prefix;
+        return operation;
+    }
+
+    public String getPrefix() {
+        return operation + "ED";
     }
 }

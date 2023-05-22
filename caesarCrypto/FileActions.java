@@ -1,10 +1,9 @@
 package javaProjects.caesarCrypto;
 
 import java.io.*;
-import java.util.ArrayList;
 
 public class FileActions {
-    public static String readFromFile(String fileName) {
+    public String readFromFile(String fileName) {
         String fileContent = new String();
         try (FileReader fileReader = new FileReader(fileName)) {
             BufferedReader bufferedReader = new BufferedReader(fileReader);
@@ -18,7 +17,7 @@ public class FileActions {
         return fileContent;
     }
 
-    public static void writeToFile(String fileName, String content) {
+    public void writeToFile(String fileName, String content) {
         try (
                 FileWriter fileWriter = new FileWriter(fileName);
                 PrintWriter printWriter = new PrintWriter(fileWriter);

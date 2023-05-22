@@ -22,14 +22,15 @@ public class Main {
         UI ui = new UI(file);
         Caesar caesar = ui.getCaesarAnalyzer();
         int cryptoKeyByBruteForce = ui.getCryptoKey();
-        String newContent = caesar.deCode(FileActions.readFromFile(file.toString()), cryptoKeyByBruteForce);
-        String prefix = Operations.BRUTE_FORCE.getOperation();
+        FileActions fileActions = new FileActions();
+        String newContent = caesar.deCode(fileActions.readFromFile(file.toString()), cryptoKeyByBruteForce);
+        String prefix = Operations.BRUTE_FORCE.getPrefix();
         ui.showLanguageMessage();
         ui.showFileContent();
         ui.showPossibleKeyMessage();
         ui.showText(newContent);
         String newFullFileName = Utils.getNewFullFileName(baseFileName, prefix);
-        FileActions.writeToFile(newFullFileName, newContent);
+        fileActions.writeToFile(newFullFileName, newContent);
     }
 
     public static void frequencyAnalyze(String baseFileName, String secondFileName) {
@@ -38,37 +39,40 @@ public class Main {
         UI ui = new UI(file, secondFile);
         Caesar caesar = ui.getCaesarAnalyzer();
         String newContent = caesar.decodeByStatisticMap(ui.getBaseFileContent(), ui.getStatisticFileContent());
-        String prefix = Operations.FREQUENCY.getOperation();
+        String prefix = Operations.FREQUENCY.getPrefix();
         ui.showFileContent();
         ui.showText(newContent);
         String newFullFileName = Utils.getNewFullFileName(baseFileName, prefix);
-        FileActions.writeToFile(newFullFileName, newContent);
+        FileActions fileActions = new FileActions();
+        fileActions.writeToFile(newFullFileName, newContent);
     }
 
     public static void encrypt(String baseFileName, int key) {
         File file = new File(baseFileName);
         UI ui = new UI(file, key);
         Caesar caesar = ui.getCaesarAnalyzer();
-        String newContent = caesar.code(FileActions.readFromFile(file.toString()), key);
-        String prefix = Operations.ENCRYPT.getOperation();
+        FileActions fileActions = new FileActions();
+        String newContent = caesar.code(fileActions.readFromFile(file.toString()), key);
+        String prefix = Operations.ENCRYPT.getPrefix();
         ui.showLanguageMessage();
         ui.showFileContent();
         ui.showText(newContent);
         String newFullFileName = Utils.getNewFullFileName(baseFileName, prefix);
-        FileActions.writeToFile(newFullFileName, newContent);
+        fileActions.writeToFile(newFullFileName, newContent);
     }
 
     public static void decrypt(String baseFileName, int key) {
         File file = new File(baseFileName);
         UI ui = new UI(file, key);
         Caesar caesar = ui.getCaesarAnalyzer();
-        String newContent = caesar.deCode(FileActions.readFromFile(file.toString()), key);
-        String prefix = Operations.DECRYPT.getOperation();
+        FileActions fileActions = new FileActions();
+        String newContent = caesar.deCode(fileActions.readFromFile(file.toString()), key);
+        String prefix = Operations.DECRYPT.getPrefix();
         ui.showLanguageMessage();
         ui.showFileContent();
         ui.showText(newContent);
         String newFullFileName = Utils.getNewFullFileName(baseFileName, prefix);
-        FileActions.writeToFile(newFullFileName, newContent);
+        fileActions.writeToFile(newFullFileName, newContent);
     }
 
     public static boolean isBrutForce(String[] args) {

@@ -63,7 +63,8 @@ public class UI {
     }
 
     public String getFileContent(File file) {
-        return FileActions.readFromFile(file.toString());
+        FileActions fileActions = new FileActions();
+        return fileActions.readFromFile(file.toString());
     }
 
     public void showLanguageMessage() {
@@ -138,8 +139,9 @@ public class UI {
                 try {
                     String encryptedContent = caesar.code(fileContent, cryptoKey);
                     showText(encryptedContent);
-                    String newFullFileName = Utils.getNewFullFileName(baseFile.toString(), Operations.ENCRYPT.getOperation());
-                    FileActions.writeToFile(newFullFileName, encryptedContent);
+                    String newFullFileName = Utils.getNewFullFileName(baseFile.toString(), Operations.ENCRYPT.getPrefix());
+                    FileActions fileActions = new FileActions();
+                    fileActions.writeToFile(newFullFileName, encryptedContent);
                 } catch (NullPointerException exception) {
                     if (fileContent == null) {
                         JOptionPane.showMessageDialog(null, "Source file was not chosen");
@@ -161,8 +163,9 @@ public class UI {
                 try {
                     String decryptedContent = caesar.deCode(fileContent, cryptoKey);
                     showText(decryptedContent);
-                    String newFullFileName = Utils.getNewFullFileName(baseFile.toString(), Operations.DECRYPT.getOperation());
-                    FileActions.writeToFile(newFullFileName, decryptedContent);
+                    String newFullFileName = Utils.getNewFullFileName(baseFile.toString(), Operations.DECRYPT.getPrefix());
+                    FileActions fileActions = new FileActions();
+                    fileActions.writeToFile(newFullFileName, decryptedContent);
                 } catch (NullPointerException exception) {
                     if (fileContent == null) {
                         JOptionPane.showMessageDialog(null, "Source file was not chosen");
@@ -185,8 +188,9 @@ public class UI {
                     showPossibleKeyMessage();
                     String decryptedContent = caesar.deCode(fileContent, cryptoKey);
                     showText(decryptedContent);
-                    String newFullFileName = Utils.getNewFullFileName(baseFile.toString(), Operations.BRUTE_FORCE.getOperation());
-                    FileActions.writeToFile(newFullFileName, decryptedContent);
+                    String newFullFileName = Utils.getNewFullFileName(baseFile.toString(), Operations.BRUTE_FORCE.getPrefix());
+                    FileActions fileActions = new FileActions();
+                    fileActions.writeToFile(newFullFileName, decryptedContent);
                 } catch (NullPointerException exception) {
                     if (fileContent == null) {
                         JOptionPane.showMessageDialog(null, "Source file was not chosen");
@@ -209,7 +213,8 @@ public class UI {
                 int option = fileChooser.showOpenDialog(jFrame);
                 if (option == JFileChooser.APPROVE_OPTION) {
                     File file = fileChooser.getSelectedFile();
-                    statisticFileContent = FileActions.readFromFile(file.toString());
+                    FileActions fileActions = new FileActions();
+                    statisticFileContent = fileActions.readFromFile(file.toString());
                     showText(statisticFileContent);
                 } else {
                     JOptionPane.showMessageDialog(null, "Open command canceled");
@@ -226,8 +231,9 @@ public class UI {
             public void actionPerformed(ActionEvent e) {
                 try {
                     String decryptedContent = caesar.decodeByStatisticMap(fileContent, statisticFileContent);
-                    String newFullFileName = Utils.getNewFullFileName(baseFile.toString(), Operations.FREQUENCY.getOperation());
-                    FileActions.writeToFile(newFullFileName, decryptedContent);
+                    String newFullFileName = Utils.getNewFullFileName(baseFile.toString(), Operations.FREQUENCY.getPrefix());
+                    FileActions fileActions = new FileActions();
+                    fileActions.writeToFile(newFullFileName, decryptedContent);
                     showText(decryptedContent);
                 } catch (NullPointerException exception) {
                     JOptionPane.showMessageDialog(null, "Not both files opened");
