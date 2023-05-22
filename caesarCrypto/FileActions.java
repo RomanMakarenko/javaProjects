@@ -12,7 +12,8 @@ public class FileActions {
                 fileContent += bufferedReader.readLine() + "\n";
             }
         } catch (IOException e) {
-            System.out.println(e);
+            UI ui = new UI();
+            ui.showText("There is problem with which you try to read: " + fileName);
         }
         return fileContent;
     }
@@ -24,7 +25,8 @@ public class FileActions {
         ) {
             printWriter.println(content);
         } catch (IOException e) {
-            System.out.println(e);
+            UI ui = new UI();
+            ui.showText("There is problem with which you try to write: " + fileName);
         }
     }
 }
