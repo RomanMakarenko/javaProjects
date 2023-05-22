@@ -80,7 +80,7 @@ public class UI {
     }
 
     public void showText(String text) {
-        JTextArea textArea = new JTextArea(text);
+        JTextArea textArea = new JTextArea(text, 10, 10);
         textArea.setColumns(SYMBOLS_IN_ROW);
         JScrollPane scrollPane = new JScrollPane(textArea);
         JOptionPane.showMessageDialog(null, scrollPane);
