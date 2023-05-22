@@ -1,5 +1,6 @@
 package javaProjects.caesarCrypto;
 
+import java.nio.file.Path;
 import java.util.*;
 
 public class Utils {
@@ -69,5 +70,16 @@ public class Utils {
 
     public static String removePrefix(String fileName) {
         return fileName.replaceAll("\\[[^\\]]*\\]", "");
+    }
+
+    public static String getNewFullFileName(String baseFileName, String prefix) {
+        Path fileName = Path.of(baseFileName);
+        String fileNameWithoutPath = fileName.getFileName().toString();
+        String fileNameWithoutPrefix = Utils.removePrefix(fileNameWithoutPath);
+        String clearFileName = fileNameWithoutPrefix.split("\\.")[0];
+        String fileExtension = fileNameWithoutPrefix.split("\\.")[1];
+
+        String pathToFile = fileName.getParent().toAbsolutePath().toString();
+        return pathToFile + "/" + clearFileName + "[" + prefix + "]." + fileExtension;
     }
 }
